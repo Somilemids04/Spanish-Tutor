@@ -118,3 +118,21 @@ Watch the `[Intent: ...]` line change for each message.
 - [ ] Tutor responds differently for translation vs quiz vs grammar
 - [ ] `unknown` intent redirects conversation back to Spanish learning
 - [ ] You can explain why we use two API calls per turn
+
+---
+
+## Key Concept Before Moving On
+
+Intent detection = the router of an AI system.
+Every message now has a label. In Phase 4, that label will decide
+which AI Agent handles the response — not just which instruction to add.
+This is the foundation of multi-agent architecture.
+
+---
+
+## Phase Status
+
+- [x] Phase 1 — Basic chatbot
+- [x] Phase 2 — Conversation memory
+- [x] Phase 3 — Intent detection (this phase)
+- [ ] Phase 4 — First AI agent (next)
