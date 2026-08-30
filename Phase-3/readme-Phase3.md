@@ -100,3 +100,21 @@ You: what do you think about football?   ← should detect: unknown
 
 Watch the `[Intent: ...]` line change for each message.
 
+---
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `ModuleNotFoundError: intent` | Make sure you're running from `Spanish_Tutor` root: `python3 phase3/chatbot.py` |
+| Intent always returns `unknown` | Gemini returned non-JSON — the fallback kicked in. Usually a rate limit issue, retry |
+| 503 / 429 errors | Wait 1-2 minutes, free tier rate limit |
+
+---
+
+## Completion Checklist
+
+- [ ] Intent label shows correctly for each message type
+- [ ] Tutor responds differently for translation vs quiz vs grammar
+- [ ] `unknown` intent redirects conversation back to Spanish learning
+- [ ] You can explain why we use two API calls per turn
