@@ -84,3 +84,19 @@ Profe: Dog in Spanish is "perro" (PEH-rro)...
 
 This makes the system transparent — you can see every decision it makes.
 
+---
+
+## Test It With These Messages
+
+```
+You: hola
+You: how do you say "water" in Spanish?
+You: why do verbs change ending?
+You: give me 5 new words
+You: let's practice conversation
+You: quiz me
+You: what do you think about football?   ← should detect: unknown
+```
+
+Watch the `[Intent: ...]` line change for each message.
+
