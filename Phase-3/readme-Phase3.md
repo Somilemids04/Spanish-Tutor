@@ -51,3 +51,21 @@ spanish-tutor/
     └── README.md     ← this file
 ```
 
+---
+
+## Running Phase 3
+
+**Mac/Linux:**
+```bash
+cd Desktop/Spanish_Tutor
+source venv/bin/activate
+python3 phase3/chatbot.py
+```
+
+**Windows:**
+```bash
+cd Desktop\Spanish_Tutor
+venv\Scripts\activate
+python phase3\chatbot.py
+```
+
