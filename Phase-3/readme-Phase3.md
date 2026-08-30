@@ -16,3 +16,17 @@ label, then shapes its response accordingly.
 - Why splitting code into modules (intent.py) is better than one big file
 
 ---
+
+## Intents Supported
+
+| Intent | Example message |
+|---|---|
+| `greeting` | "hi", "hola", "hello" |
+| `translation` | "how do you say cat in Spanish?" |
+| `grammar` | "why do adjectives come after nouns?" |
+| `vocabulary` | "give me 5 new words" |
+| `practice` | "let's have a conversation in Spanish" |
+| `quiz` | "quiz me on colors" |
+| `unknown` | anything unrelated to Spanish learning |
+
+---
