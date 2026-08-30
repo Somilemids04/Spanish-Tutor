@@ -69,3 +69,18 @@ venv\Scripts\activate
 python phase3\chatbot.py
 ```
 
+---
+
+## What You See in the Terminal
+
+Every message now shows the detected intent before the reply:
+
+```
+You: how do you say dog in Spanish?
+  [Intent: translation | Confidence: high]
+
+Profe: Dog in Spanish is "perro" (PEH-rro)...
+```
+
+This makes the system transparent — you can see every decision it makes.
+
