@@ -211,7 +211,7 @@ This is the most stable free-tier model for the current SDK version.
 | `ModuleNotFoundError` | Activate venv first, then `pip install -r requirements.txt` |
 | `GEMINI_API_KEY not found` | Check `.env` is in root folder, not inside a phase folder |
 | SSL certificate error | Run `pip install --upgrade certifi` |
-| 404 model not found | Change model to `gemini-2.0-flash` in the relevant file |
+| 404 model not found | Change model to `gemini-2.0-flash or gemini-3.6-flash` in the relevant file |
 | 503 UNAVAILABLE | Gemini free tier busy — wait 2 min and retry |
 | 429 Too Many Requests | Rate limit hit — wait 1 minute |
 | Intent always `unknown` | Model name wrong in `intent.py` — set to `gemini-2.0-flash` |
