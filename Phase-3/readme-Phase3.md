@@ -58,7 +58,7 @@ spanish-tutor/
 **Mac/Linux:**
 ```bash
 cd Desktop/Spanish_Tutor
-source venv/bin/activate
+source venv/bin/activate 
 python3 phase3/chatbot.py
 ```
 
