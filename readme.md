@@ -12,8 +12,8 @@ voice-enabled AI agent with long-term memory. Built entirely in Python,
 |-------|-------|--------|
 | 1 | Basic AI chatbot | ✅ Done |
 | 2 | Conversation memory | ✅ Done |
-| 3 | Intent detection | 🔲 Next |
-| 4 | First AI agent (Teacher Agent) | 🔲 |
+| 3 | Intent detection | ✅ Done |
+| 4 | First AI agent (Teacher Agent) | 🔲 Next |
 | 5 | Multiple specialized agents (Grammar, Vocabulary, etc.) | 🔲 |
 | 6 | Agent orchestration | 🔲 |
 | 7 | User progress tracking | 🔲 |
@@ -44,7 +44,7 @@ By Phase 14 you will have a fully working:
 | Tool | Used From | Purpose |
 |------|-----------|---------|
 | Python | Phase 1 | Core language |
-| Gemini API (free tier) | Phase 1 | LLM backbone |
+| Gemini API free tier | Phase 1 | LLM backbone |
 | python-dotenv | Phase 1 | Load API keys safely |
 | FastAPI | Phase 4 | Web server for the agent |
 | LangChain | Phase 5 | Agent + tool framework |
@@ -67,13 +67,17 @@ spanish-tutor/
 │
 ├── phase1/
 │   ├── chatbot.py          # Basic stateless chatbot
-│   └── README.md           # Phase 1 instructions
+│   └── README.md
 │
 ├── phase2/
 │   ├── chatbot.py          # Chatbot with conversation memory
-│   └── README.md           # Phase 2 instructions
+│   └── README.md
 │
-├── phase3/                 # Intent detection (coming soon)
+├── phase3/
+│   ├── chatbot.py          # Intent-aware chatbot
+│   ├── intent.py           # Intent classification module
+│   └── README.md
+│
 ├── phase4/                 # Teacher Agent (coming soon)
 ├── phase5/                 # Multiple agents (coming soon)
 ├── phase6/                 # Orchestration (coming soon)
@@ -98,7 +102,7 @@ Check if you have it:
 python3 --version
 ```
 If not installed: https://www.python.org/downloads/
-During install on Windows, check **"Add Python to PATH"**.
+During install on Windows, check "Add Python to PATH".
 
 ### 2. Get a free Gemini API key
 
@@ -109,87 +113,92 @@ Sign in with a Google account and generate a key. Free tier is enough for all ph
 
 ## First-Time Project Setup (do this once)
 
-### Step 1 — Download or clone the project
+### Step 1 — Open your terminal
 
-Put the `spanish-tutor` folder somewhere you can find it, e.g. your Desktop.
+- **Mac**: Spotlight (Cmd+Space) → type Terminal → Enter
+- **Windows**: Start menu → search cmd or PowerShell → Enter
 
-### Step 2 — Open your terminal
+### Step 2 — Navigate to the project
 
-- **Mac**: Spotlight (Cmd+Space) → type `Terminal` → Enter
-- **Windows**: Start menu → search `cmd` or `PowerShell` → Enter
-
-### Step 3 — Navigate to the project
-
-```
+```bash
 cd Desktop/Spanish_Tutor
 ```
-(Windows: use backslashes `cd Desktop\Spanish_Tutor`)
+Windows: use backslashes `cd Desktop\Spanish_Tutor`
 
-### Step 4 — Create a virtual environment
+### Step 3 — Create a virtual environment
 
-```
+```bash
 python3 -m venv venv
 ```
 
-A `venv/` folder will appear. This keeps project packages isolated.
-
-### Step 5 — Activate the virtual environment
+### Step 4 — Activate it
 
 **Mac/Linux:**
-```
+```bash
 source venv/bin/activate
 ```
 
 **Windows (cmd):**
-```
+```bash
 venv\Scripts\activate
 ```
 
 **Windows (PowerShell):**
-```
+```bash
 venv\Scripts\Activate.ps1
 ```
 
-You'll see `(venv)` at the start of your terminal line. ✅
+You will see `(venv)` at the start of your terminal line. ✅
 
-> You must do this activation step every time you open a new terminal.
+> You must activate every time you open a new terminal.
 
-### Step 6 — Install packages
+### Step 5 — Install packages
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
-### Step 7 — Add your API key
+### Step 6 — Add your API key
 
-Open `.env` in any text editor and replace the placeholder:
+Open `.env` and replace the placeholder:
 ```
 GEMINI_API_KEY=your_actual_key_here
 ```
-Save the file. Never share this file or commit it to git.
+Save the file. Never share this or commit it to git.
 
 ---
 
 ## Running Each Phase
 
-Always run from the `spanish-tutor` root folder with `(venv)` active.
+Always run from the `Spanish_Tutor` root folder with `(venv)` active.
 
 **Mac/Linux:**
-```
-source venv/bin/activate
+```bash
 python3 phase1/chatbot.py
 python3 phase2/chatbot.py
+python3 phase3/chatbot.py
 ```
 
 **Windows:**
-```
-venv\Scripts\activate
+```bash
 python phase1\chatbot.py
 python phase2\chatbot.py
+python phase3\chatbot.py
 ```
 
-Each phase has its own `README.md` inside its folder with specific
-instructions and test steps for that phase.
+Each phase folder has its own README.md with specific instructions.
+
+---
+
+## Gemini Model Reference
+
+If you get a 404 or 503 error, use this model name in all files:
+
+```python
+MODEL_NAME = "gemini-2.0-flash"
+```
+
+This is the most stable free-tier model for the current SDK version.
 
 ---
 
@@ -200,35 +209,22 @@ instructions and test steps for that phase.
 | `command not found: python` | Use `python3` instead (Mac/Linux) |
 | `(venv)` not showing | Run the activate command again |
 | `ModuleNotFoundError` | Activate venv first, then `pip install -r requirements.txt` |
-| `GEMINI_API_KEY not found` | Check `.env` is in project root, not inside a phase folder |
-| SSL certificate error | Run `pip install --upgrade certifi`, or try a different network |
-| 503 UNAVAILABLE (Gemini) | Free tier overloaded — wait 2 min and retry, or change model to `gemini-1.5-flash` |
+| `GEMINI_API_KEY not found` | Check `.env` is in root folder, not inside a phase folder |
+| SSL certificate error | Run `pip install --upgrade certifi` |
+| 404 model not found | Change model to `gemini-2.0-flash` in the relevant file |
+| 503 UNAVAILABLE | Gemini free tier busy — wait 2 min and retry |
 | 429 Too Many Requests | Rate limit hit — wait 1 minute |
-
-### Switching Gemini model (if 503 errors persist)
-
-In any `chatbot.py`, find this line and change the model name:
-```python
-# Change this:
-MODEL_NAME = "gemini-2.5-flash"
-
-# To this (more stable free tier):
-MODEL_NAME = "gemini-1.5-flash"
-```
+| Intent always `unknown` | Model name wrong in `intent.py` — set to `gemini-2.0-flash` |
 
 ---
 
-## Cost
+## Git Commands (push updates)
 
-Everything in this project is **free**:
-
-| Component | Free Option |
-|---|---|
-| LLM | Gemini API free tier |
-| Vector DB (Phase 10/11) | ChromaDB — runs locally |
-| Speech-to-Text (Phase 12) | faster-whisper — runs locally |
-| Text-to-Speech (Phase 12) | pyttsx3 or Edge TTS — free |
-| Hosting (Phase 14) | Run locally, or Render/Railway free tier |
+```bash
+git add .
+git commit -m "Phase 3 complete"
+git push
+```
 
 ---
 
