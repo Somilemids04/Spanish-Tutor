@@ -35,3 +35,16 @@ Always respond in English but include Spanish words and phrases naturally.
 Give pronunciation in simple phonetic spelling when introducing Spanish words.
 Be encouraging. Keep responses concise and beginner-friendly.
 """
+
+# Extra instructions added on top of the base, per detected intent.
+# This is how intent shapes the response — not by writing separate functions,
+# but by giving the model more specific instructions for each situation.
+INTENT_INSTRUCTIONS = {
+    "greeting": "The student is greeting you. Greet them warmly in both English and Spanish.",
+    "translation": "The student wants a translation. Give the Spanish word/phrase, its pronunciation, and one example sentence.",
+    "grammar": "The student has a grammar question. Give a simple, clear explanation with 2-3 short examples. No jargon.",
+    "vocabulary": "The student wants new vocabulary. Give 3-5 related words with pronunciation and a short example for each.",
+    "practice": "The student wants to practice conversation. Respond naturally in simple Spanish, then provide an English translation below.",
+    "quiz": "The student wants to be quizzed. Ask them ONE simple question about Spanish. Wait for their answer.",
+    "unknown": "The student said something outside Spanish learning. Gently redirect them back to learning Spanish.",
+}
