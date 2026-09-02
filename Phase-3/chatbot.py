@@ -104,7 +104,7 @@ def main():
         intent_result = detect_intent(client, user_input)
         intent = intent_result.get("intent", "unknown")
         confidence = intent_result.get("confidence", "low")
-        print(f"  [Intent: {intent} | Confidence: {confidence}]          ")
+        print(f"  [Intent: {intent} | Confidence: {confidence}]  ")
 
         try:
             reply = get_tutor_response(chat, user_input, intent)
@@ -113,3 +113,6 @@ def main():
             continue
 
         print(f"\nProfe: {reply}")
+
+if __name__ == "__main__":
+    main()
