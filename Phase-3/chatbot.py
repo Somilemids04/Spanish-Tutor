@@ -63,3 +63,13 @@ def get_tutor_response(chat, user_message: str, intent: str) -> str:
 
     response = chat.send_message(enriched_message)
     return response.text
+
+def main():
+    client = genai.Client(api_key=API_KEY)
+
+    chat = client.chats.create(
+        model=MODEL_NAME,
+        config=types.GenerateContentConfig(
+            system_instruction=BASE_SYSTEM_INSTRUCTION,
+        ),
+    )
