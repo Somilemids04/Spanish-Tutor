@@ -48,3 +48,32 @@ User: "let's have a conversation in Spanish" → {"intent": "practice", "confide
 User: "quiz me on colors" → {"intent": "quiz", "confidence": "high"}
 User: "what do you think about pizza?" → {"intent": "unknown", "confidence": "high"}
 """
+
+def detect_intent(client: genai.Client, user_message: str) -> dict:
+    """
+    Sends user message to Gemini for intent classification.
+    Returns a dict like: {"intent": "translation", "confidence": "high"}
+    Falls back to {"intent": "unknown", "confidence": "low"} on any error.
+    """
+    try:
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            # We send BOTH the classification instructions AND the user message
+            contents=f"{INTENT_DETECTION_PROMPT}\n\nUser message: {user_message}",
+        )
+
+        raw = response.text.strip()
+
+        # Strip markdown code fences if Gemini adds them despite instructions
+        if raw.startswith("```"):
+            raw = raw.split("```")[1]
+            if raw.startswith("json"):
+                raw = raw[4:]
+            raw = raw.strip()
+
+        result = json.loads(raw)
+        return result
+
+    except (json.JSONDecodeError, Exception):
+        # Always return a valid dict — never crash the main loop
+        return {"intent": "unknown", "confidence": "low"}
