@@ -98,3 +98,18 @@ def main():
 
         if not user_input:
             continue
+
+        # --- PHASE 3 ADDITION: detect intent before responding ---
+        print("  [Detecting intent...]", end="\r")
+        intent_result = detect_intent(client, user_input)
+        intent = intent_result.get("intent", "unknown")
+        confidence = intent_result.get("confidence", "low")
+        print(f"  [Intent: {intent} | Confidence: {confidence}]          ")
+
+        try:
+            reply = get_tutor_response(chat, user_input, intent)
+        except Exception as e:
+            print(f"\n[Error: {e}]")
+            continue
+
+        print(f"\nProfe: {reply}")
