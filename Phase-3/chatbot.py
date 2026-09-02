@@ -48,3 +48,18 @@ INTENT_INSTRUCTIONS = {
     "quiz": "The student wants to be quizzed. Ask them ONE simple question about Spanish. Wait for their answer.",
     "unknown": "The student said something outside Spanish learning. Gently redirect them back to learning Spanish.",
 }
+
+def get_tutor_response(chat, user_message: str, intent: str) -> str:
+    """
+    Sends user message to the tutor chat session.
+    Prepends intent-specific instructions so the response style matches the intent.
+    """
+    # Combine base instruction + intent-specific instruction
+    intent_context = INTENT_INSTRUCTIONS.get(intent, INTENT_INSTRUCTIONS["unknown"])
+
+    # We prepend the intent hint to the user message so the model knows
+    # what kind of response is expected — without changing the chat history format
+    enriched_message = f"[Student intent: {intent}]\n[Instruction: {intent_context}]\n\nStudent said: {user_message}"
+
+    response = chat.send_message(enriched_message)
+    return response.text
