@@ -73,3 +73,28 @@ def main():
             system_instruction=BASE_SYSTEM_INSTRUCTION,
         ),
     )
+
+    print("=" * 55)
+    print("  Spanish Tutor (Phase 3 — Intent Detection)")
+    print("  I now understand what you are trying to do!")
+    print("  Type 'exit' to quit | 'history' to see chat log")
+    print("=" * 55)
+
+    while True:
+        user_input = input("\nYou: ").strip()
+
+        if user_input.lower() in ("exit", "quit"):
+            print("Profe: ¡Hasta luego! (See you later!)")
+            break
+
+        if user_input.lower() == "history":
+            print("\n--- Conversation History ---")
+            for msg in chat.get_history():
+                role = "You" if msg.role == "user" else "Profe"
+                text = msg.parts[0].text
+                print(f"{role}: {text[:120]}{'...' if len(text) > 120 else ''}")
+            print("----------------------------")
+            continue
+
+        if not user_input:
+            continue
