@@ -9,3 +9,8 @@ What's new vs Phase 2:
 
 Run with: python3 phase3/chatbot.py
 """
+import os
+import sys
+from dotenv import load_dotenv
+from google import genai
+from google.genai import types
