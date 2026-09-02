@@ -13,3 +13,38 @@ Intents supported:
 - quiz            : "quiz me", "test me", "ask me a question"
 - unknown         : anything that doesn't fit above
 """
+
+import json
+from google import genai
+from google.genai import types
+
+MODEL_NAME = "gemini-3.6-flash"
+
+# This prompt instructs Gemini to act as a classifier, not a tutor.
+# Notice: we ask for JSON only — no explanation, no extra text.
+INTENT_DETECTION_PROMPT = """\
+You are an intent classifier for a Spanish language learning app.
+
+Given a user message, classify it into EXACTLY ONE of these intents:
+- greeting
+- translation
+- grammar
+- vocabulary
+- practice
+- quiz
+- unknown
+
+Rules:
+- Return ONLY a valid JSON object, nothing else.
+- No explanation, no markdown, no extra text.
+- Format: {"intent": "label", "confidence": "high/medium/low"}
+
+Examples:
+User: "hi there" → {"intent": "greeting", "confidence": "high"}
+User: "how do you say cat in Spanish?" → {"intent": "translation", "confidence": "high"}
+User: "why do adjectives come after nouns?" → {"intent": "grammar", "confidence": "high"}
+User: "give me 5 new words" → {"intent": "vocabulary", "confidence": "high"}
+User: "let's have a conversation in Spanish" → {"intent": "practice", "confidence": "high"}
+User: "quiz me on colors" → {"intent": "quiz", "confidence": "high"}
+User: "what do you think about pizza?" → {"intent": "unknown", "confidence": "high"}
+"""
