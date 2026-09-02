@@ -14,3 +14,15 @@ import sys
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+
+# Import our new intent detection module
+from intent import detect_intent
+
+load_dotenv()
+
+API_KEY = os.getenv("GEMINI_API_KEY")
+if not API_KEY:
+    print("ERROR: GEMINI_API_KEY not found.")
+    sys.exit(1)
+
+MODEL_NAME = "gemini-3.6-flash"
