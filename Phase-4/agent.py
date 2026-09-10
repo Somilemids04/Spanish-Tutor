@@ -106,3 +106,92 @@ TOOL_DECLARATIONS = types.Tool(
         ),
     ]
 )
+
+class TeacherAgent:
+    """
+    The Teacher Agent.
+
+    Maintains conversation history and runs the ReAct loop:
+    Reason (Gemini decides) → Act (tool called) → Observe (result) → Respond
+    """
+
+    def __init__(self, client: genai.Client):
+        self.client = client
+        self.history = []  # full conversation history (we manage this manually now)
+
+    def chat(self, user_message: str) -> str:
+        """
+        Processes one user message through the full agent loop.
+        Returns the final text response.
+        """
+        # Add user message to history
+        self.history.append(
+            types.Content(role="user", parts=[types.Part(text=user_message)])
+        )
+
+        # ── Step 1: Send to Gemini with tools ──────────────────────────────────
+        response = self.client.models.generate_content(
+            model=MODEL_NAME,
+            contents=self.history,
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_INSTRUCTION,
+                tools=[TOOL_DECLARATIONS],
+            ),
+        )
+
+        # ── Step 2: Check if Gemini wants to call a tool ───────────────────────
+        candidate = response.candidates[0]
+        part = candidate.content.parts[0]
+
+        # If it's a function call, run the tool and send result back
+        if hasattr(part, "function_call") and part.function_call:
+            tool_call = part.function_call
+            tool_name = tool_call.name
+            tool_args = dict(tool_call.args)
+
+            print(f"  [Agent calling tool: {tool_name}({tool_args})]")
+
+            # Run the actual Python function
+            tool_result = run_tool(tool_name, tool_args)
+
+            # Add the agent's tool call to history
+            self.history.append(candidate.content)
+
+            # Add tool result to history so Gemini can read it
+            self.history.append(
+                types.Content(
+                    role="user",
+                    parts=[
+                        types.Part(
+                            function_response=types.FunctionResponse(
+                                name=tool_name,
+                                response={"result": json.dumps(tool_result)},
+                            )
+                        )
+                    ],
+                )
+            )
+
+            # ── Step 3: Send tool result back to Gemini for final response ─────
+            final_response = self.client.models.generate_content(
+                model=MODEL_NAME,
+                contents=self.history,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_INSTRUCTION,
+                    tools=[TOOL_DECLARATIONS],
+                ),
+            )
+
+            final_text = final_response.text
+            # Add final response to history
+            self.history.append(
+                types.Content(role="model", parts=[types.Part(text=final_text)])
+            )
+            return final_text
+
+        # No tool call — plain text response
+        plain_text = part.text
+        self.history.append(
+            types.Content(role="model", parts=[types.Part(text=plain_text)])
+        )
+        return plain_text
