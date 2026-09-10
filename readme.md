@@ -13,8 +13,8 @@ voice-enabled AI agent with long-term memory. Built entirely in Python,
 | 1 | Basic AI chatbot | ✅ Done |
 | 2 | Conversation memory | ✅ Done |
 | 3 | Intent detection | ✅ Done |
-| 4 | First AI agent (Teacher Agent) | 🔲 Next |
-| 5 | Multiple specialized agents (Grammar, Vocabulary, etc.) | 🔲 |
+| 4 | First AI agent (Teacher Agent) | ✅ Done |
+| 5 | Multiple specialized agents (Grammar, Vocabulary, etc.) | 🔲 Next |
 | 6 | Agent orchestration | 🔲 |
 | 7 | User progress tracking | 🔲 |
 | 8 | Quiz and evaluation | 🔲 |
@@ -46,7 +46,7 @@ By Phase 14 you will have a fully working:
 | Python | Phase 1 | Core language |
 | Gemini API free tier | Phase 1 | LLM backbone |
 | python-dotenv | Phase 1 | Load API keys safely |
-| FastAPI | Phase 4 | Web server for the agent |
+| FastAPI | Phase 5 | Web server for the agents |
 | LangChain | Phase 5 | Agent + tool framework |
 | LangGraph | Phase 6 | Agent orchestration |
 | ChromaDB | Phase 10 | Local vector database (free, no cloud) |
@@ -65,30 +65,35 @@ spanish-tutor/
 ├── requirements.txt        # All Python dependencies
 ├── README.md               # This file
 │
-├── phase1/
+├── Phase-1/
 │   ├── chatbot.py          # Basic stateless chatbot
 │   └── README.md
 │
-├── phase2/
+├── Phase-2/
 │   ├── chatbot.py          # Chatbot with conversation memory
 │   └── README.md
 │
-├── phase3/
+├── Phase-3/
 │   ├── chatbot.py          # Intent-aware chatbot
 │   ├── intent.py           # Intent classification module
 │   └── README.md
 │
-├── phase4/                 # Teacher Agent (coming soon)
-├── phase5/                 # Multiple agents (coming soon)
-├── phase6/                 # Orchestration (coming soon)
-├── phase7/                 # Progress tracking (coming soon)
-├── phase8/                 # Quiz + evaluation (coming soon)
-├── phase9/                 # Lesson planning (coming soon)
-├── phase10/                # RAG (coming soon)
-├── phase11/                # Long-term memory (coming soon)
-├── phase12/                # Voice support (coming soon)
-├── phase13/                # Advanced workflows (coming soon)
-└── phase14/                # Production deployment (coming soon)
+├── Phase-4/
+│   ├── chatbot.py          # Terminal UI only
+│   ├── agent.py            # Teacher Agent + ReAct loop
+│   ├── tools.py            # Tool functions (translate, grammar, vocab, quiz)
+│   └── README.md
+│
+├── Phase-5/                # Multiple agents (coming soon)
+├── Phase-6/                # Orchestration (coming soon)
+├── Phase-7/                # Progress tracking (coming soon)
+├── Phase-8/                # Quiz + evaluation (coming soon)
+├── Phase-9/                # Lesson planning (coming soon)
+├── Phase-10/               # RAG (coming soon)
+├── Phase-11/               # Long-term memory (coming soon)
+├── Phase-12/               # Voice support (coming soon)
+├── Phase-13/               # Advanced workflows (coming soon)
+└── Phase-14/               # Production deployment (coming soon)
 ```
 
 ---
@@ -174,16 +179,18 @@ Always run from the `Spanish_Tutor` root folder with `(venv)` active.
 
 **Mac/Linux:**
 ```bash
-python3 phase1/chatbot.py
-python3 phase2/chatbot.py
-python3 phase3/chatbot.py
+python3 Phase-1/chatbot.py
+python3 Phase-2/chatbot.py
+python3 Phase-3/chatbot.py
+python3 Phase-4/chatbot.py
 ```
 
 **Windows:**
 ```bash
-python phase1\chatbot.py
-python phase2\chatbot.py
-python phase3\chatbot.py
+python Phase-1\chatbot.py
+python Phase-2\chatbot.py
+python Phase-3\chatbot.py
+python Phase-4\chatbot.py
 ```
 
 Each phase folder has its own README.md with specific instructions.
@@ -192,13 +199,15 @@ Each phase folder has its own README.md with specific instructions.
 
 ## Gemini Model Reference
 
-If you get a 404 or 503 error, use this model name in all files:
+Use this model name in all files across all phases:
 
 ```python
 MODEL_NAME = "gemini-2.0-flash"
 ```
 
-This is the most stable free-tier model for the current SDK version.
+This is the correct and stable free-tier model name.
+Do NOT use `gemini-1.5-flash` or `gemini-3.6-flash` — these either
+don't exist or have limited availability on the free tier.
 
 ---
 
@@ -209,20 +218,31 @@ This is the most stable free-tier model for the current SDK version.
 | `command not found: python` | Use `python3` instead (Mac/Linux) |
 | `(venv)` not showing | Run the activate command again |
 | `ModuleNotFoundError` | Activate venv first, then `pip install -r requirements.txt` |
+| `ModuleNotFoundError: agent` or `tools` | Run from root folder, not from inside the phase folder |
 | `GEMINI_API_KEY not found` | Check `.env` is in root folder, not inside a phase folder |
 | SSL certificate error | Run `pip install --upgrade certifi` |
-| 404 model not found | Change model to `gemini-2.0-flash or gemini-3.6-flash` in the relevant file |
+| 404 model not found | Set `MODEL_NAME = "gemini-2.0-flash"` in the relevant file |
 | 503 UNAVAILABLE | Gemini free tier busy — wait 2 min and retry |
 | 429 Too Many Requests | Rate limit hit — wait 1 minute |
-| Intent always `unknown` | Model name wrong in `intent.py` — set to `gemini-2.0-flash` |
+| Intent always `unknown` | Set `MODEL_NAME = "gemini-2.0-flash"` in `Phase-3/intent.py` |
+| No such file or directory | Check folder name matches exactly — folders are `Phase-1`, `Phase-2` etc. |
 
 ---
 
-## Git Commands (push updates)
+## Git Commands
 
 ```bash
+# First time
+git init
 git add .
-git commit -m "Phase 3 complete"
+git commit -m "Phase 4 complete"
+git remote add origin https://github.com/YOUR_USERNAME/spanish-tutor.git
+git branch -M main
+git push -u origin main
+
+# Every phase after that
+git add .
+git commit -m "Phase X complete"
 git push
 ```
 
