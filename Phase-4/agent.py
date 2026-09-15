@@ -1,22 +1,17 @@
 """
-agent.py — Phase 4
+agent.py — Phase 4 (fixed)
 
-The Teacher Agent.
-- Registers tools with Gemini using function declarations
-- Sends user messages + tool definitions to Gemini
-- Handles tool call responses (ReAct loop)
-- Returns the final text response
-
-This is where the "agent" logic lives.
-chatbot.py is just the UI. tools.py is just functions.
-agent.py is the brain that connects them.
+Fixes:
+- "Profe: None" bug — properly extracts text from final response
+- 400 INVALID_ARGUMENT — cleans up history on failed tool calls
 """
+
 import json
 from google import genai
 from google.genai import types
 from tools import run_tool
 
-MODEL_NAME = "gemini-3.6-flash"
+MODEL_NAME = "gemini-2.0-flash"
 
 SYSTEM_INSTRUCTION = """\
 You are Profe, a friendly and patient Spanish language teacher.
@@ -30,10 +25,6 @@ Rules:
 - If unsure which tool to use, just respond conversationally.
 """
 
-# ── Tool declarations ───────────────────────────────────────────────────────────
-# These tell Gemini what tools exist and what arguments they take.
-# Gemini reads these descriptions to decide when and how to call each tool.
-# Think of this as the "menu" of tools you're giving the agent.
 TOOL_DECLARATIONS = types.Tool(
     function_declarations=[
         types.FunctionDeclaration(
@@ -42,14 +33,8 @@ TOOL_DECLARATIONS = types.Tool(
             parameters=types.Schema(
                 type=types.Type.OBJECT,
                 properties={
-                    "word": types.Schema(
-                        type=types.Type.STRING,
-                        description="The word or short phrase to translate"
-                    ),
-                    "direction": types.Schema(
-                        type=types.Type.STRING,
-                        description="Translation direction: 'en_to_es' for English to Spanish, 'es_to_en' for Spanish to English"
-                    ),
+                    "word": types.Schema(type=types.Type.STRING, description="The word or short phrase to translate"),
+                    "direction": types.Schema(type=types.Type.STRING, description="'en_to_es' for English to Spanish, 'es_to_en' for Spanish to English"),
                 },
                 required=["word"],
             ),
@@ -60,10 +45,7 @@ TOOL_DECLARATIONS = types.Tool(
             parameters=types.Schema(
                 type=types.Type.OBJECT,
                 properties={
-                    "topic": types.Schema(
-                        type=types.Type.STRING,
-                        description="The grammar topic to explain, e.g. 'ser vs estar', 'verb conjugation', 'gendered nouns'"
-                    ),
+                    "topic": types.Schema(type=types.Type.STRING, description="The grammar topic to explain"),
                 },
                 required=["topic"],
             ),
@@ -74,14 +56,8 @@ TOOL_DECLARATIONS = types.Tool(
             parameters=types.Schema(
                 type=types.Type.OBJECT,
                 properties={
-                    "category": types.Schema(
-                        type=types.Type.STRING,
-                        description="The vocabulary theme, e.g. 'colors', 'food', 'family', 'numbers'"
-                    ),
-                    "count": types.Schema(
-                        type=types.Type.INTEGER,
-                        description="How many words to return. Default is 5."
-                    ),
+                    "category": types.Schema(type=types.Type.STRING, description="The vocabulary theme e.g. colors, food, family"),
+                    "count": types.Schema(type=types.Type.INTEGER, description="How many words to return. Default is 5."),
                 },
                 required=["category"],
             ),
@@ -92,14 +68,8 @@ TOOL_DECLARATIONS = types.Tool(
             parameters=types.Schema(
                 type=types.Type.OBJECT,
                 properties={
-                    "topic": types.Schema(
-                        type=types.Type.STRING,
-                        description="What to quiz on, e.g. 'numbers', 'colors', 'greetings'"
-                    ),
-                    "difficulty": types.Schema(
-                        type=types.Type.STRING,
-                        description="Difficulty level: 'beginner', 'intermediate', or 'advanced'"
-                    ),
+                    "topic": types.Schema(type=types.Type.STRING, description="What to quiz on e.g. numbers, colors, greetings"),
+                    "difficulty": types.Schema(type=types.Type.STRING, description="'beginner', 'intermediate', or 'advanced'"),
                 },
                 required=["topic"],
             ),
@@ -107,43 +77,45 @@ TOOL_DECLARATIONS = types.Tool(
     ]
 )
 
+
 class TeacherAgent:
-    """
-    The Teacher Agent.
-
-    Maintains conversation history and runs the ReAct loop:
-    Reason (Gemini decides) → Act (tool called) → Observe (result) → Respond
-    """
-
     def __init__(self, client: genai.Client):
         self.client = client
-        self.history = []  # full conversation history (we manage this manually now)
+        self.history = []
 
-    def chat(self, user_message: str) -> str:
-        """
-        Processes one user message through the full agent loop.
-        Returns the final text response.
-        """
-        # Add user message to history
-        self.history.append(
-            types.Content(role="user", parts=[types.Part(text=user_message)])
-        )
-
-        # ── Step 1: Send to Gemini with tools ──────────────────────────────────
-        response = self.client.models.generate_content(
+    def _generate(self, contents):
+        """Calls Gemini with current contents and returns the response."""
+        return self.client.models.generate_content(
             model=MODEL_NAME,
-            contents=self.history,
+            contents=contents,
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION,
                 tools=[TOOL_DECLARATIONS],
             ),
         )
 
-        # ── Step 2: Check if Gemini wants to call a tool ───────────────────────
+    def _extract_text(self, response) -> str:
+        """Safely extracts text from a Gemini response."""
+        try:
+            for part in response.candidates[0].content.parts:
+                if hasattr(part, "text") and part.text:
+                    return part.text
+        except Exception:
+            pass
+        return "I'm sorry, I couldn't generate a response. Please try again."
+
+    def chat(self, user_message: str) -> str:
+        # Add user message to history
+        self.history.append(
+            types.Content(role="user", parts=[types.Part(text=user_message)])
+        )
+
+        # Step 1 — send to Gemini
+        response = self._generate(self.history)
         candidate = response.candidates[0]
         part = candidate.content.parts[0]
 
-        # If it's a function call, run the tool and send result back
+        # Step 2 — check for tool call
         if hasattr(part, "function_call") and part.function_call:
             tool_call = part.function_call
             tool_name = tool_call.name
@@ -151,13 +123,13 @@ class TeacherAgent:
 
             print(f"  [Agent calling tool: {tool_name}({tool_args})]")
 
-            # Run the actual Python function
+            # Run the tool
             tool_result = run_tool(tool_name, tool_args)
 
-            # Add the agent's tool call to history
+            # Add tool call to history
             self.history.append(candidate.content)
 
-            # Add tool result to history so Gemini can read it
+            # Add tool result to history
             self.history.append(
                 types.Content(
                     role="user",
@@ -172,25 +144,24 @@ class TeacherAgent:
                 )
             )
 
-            # ── Step 3: Send tool result back to Gemini for final response ─────
-            final_response = self.client.models.generate_content(
-                model=MODEL_NAME,
-                contents=self.history,
-                config=types.GenerateContentConfig(
-                    system_instruction=SYSTEM_INSTRUCTION,
-                    tools=[TOOL_DECLARATIONS],
-                ),
-            )
+            # Step 3 — get final response after tool result
+            try:
+                final_response = self._generate(self.history)
+                final_text = self._extract_text(final_response)
 
-            final_text = final_response.text
-            # Add final response to history
-            self.history.append(
-                types.Content(role="model", parts=[types.Part(text=final_text)])
-            )
-            return final_text
 
-        # No tool call — plain text response
-        plain_text = part.text
+                self.history.append(
+                    types.Content(role="model", parts=[types.Part(text=final_text)])
+                )
+                return final_text
+
+            except Exception as e:
+                self.history.pop()
+                self.history.pop()
+                return f"I had trouble processing that. Could you rephrase? ({e})"
+
+        # No call — plain text response
+        plain_text = self._extract_text(response)
         self.history.append(
             types.Content(role="model", parts=[types.Part(text=plain_text)])
         )
