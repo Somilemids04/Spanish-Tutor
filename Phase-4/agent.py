@@ -11,7 +11,7 @@ from google import genai
 from google.genai import types
 from tools import run_tool
 
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.6-flash"
 
 SYSTEM_INSTRUCTION = """\
 You are Profe, a friendly and patient Spanish language teacher.
