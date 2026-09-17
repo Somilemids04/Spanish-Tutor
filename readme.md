@@ -202,7 +202,7 @@ Each phase folder has its own README.md with specific instructions.
 Use this model name in all files across all phases:
 
 ```python
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.6-flash"
 ```
 
 This is the correct and stable free-tier model name.
@@ -221,10 +221,10 @@ don't exist or have limited availability on the free tier.
 | `ModuleNotFoundError: agent` or `tools` | Run from root folder, not from inside the phase folder |
 | `GEMINI_API_KEY not found` | Check `.env` is in root folder, not inside a phase folder |
 | SSL certificate error | Run `pip install --upgrade certifi` |
-| 404 model not found | Set `MODEL_NAME = "gemini-2.0-flash"` in the relevant file |
+| 404 model not found | Set `MODEL_NAME = "gemini-3.6-flash"` in the relevant file |
 | 503 UNAVAILABLE | Gemini free tier busy — wait 2 min and retry |
 | 429 Too Many Requests | Rate limit hit — wait 1 minute |
-| Intent always `unknown` | Set `MODEL_NAME = "gemini-2.0-flash"` in `Phase-3/intent.py` |
+| Intent always `unknown` | Set `MODEL_NAME = "gemini-3.6-flash"` in `Phase-3/intent.py` |
 | No such file or directory | Check folder name matches exactly — folders are `Phase-1`, `Phase-2` etc. |
 
 ---
