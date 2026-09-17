@@ -14,8 +14,8 @@ voice-enabled AI agent with long-term memory. Built entirely in Python,
 | 2 | Conversation memory | ✅ Done |
 | 3 | Intent detection | ✅ Done |
 | 4 | First AI agent (Teacher Agent) | ✅ Done |
-| 5 | Multiple specialized agents (Grammar, Vocabulary, etc.) | 🔲 Next |
-| 6 | Agent orchestration | 🔲 |
+| 5 | Multiple specialized agents (Grammar, Vocabulary, etc.) | ✅ Done |
+| 6 | Agent orchestration | 🔲 Next |
 | 7 | User progress tracking | 🔲 |
 | 8 | Quiz and evaluation | 🔲 |
 | 9 | Lesson planning | 🔲 |
@@ -46,8 +46,6 @@ By Phase 14 you will have a fully working:
 | Python | Phase 1 | Core language |
 | Gemini API free tier | Phase 1 | LLM backbone |
 | python-dotenv | Phase 1 | Load API keys safely |
-| FastAPI | Phase 5 | Web server for the agents |
-| LangChain | Phase 5 | Agent + tool framework |
 | LangGraph | Phase 6 | Agent orchestration |
 | ChromaDB | Phase 10 | Local vector database (free, no cloud) |
 | faster-whisper | Phase 12 | Speech-to-text (runs locally, free) |
@@ -58,7 +56,7 @@ By Phase 14 you will have a fully working:
 ## Folder Structure (full project)
 
 ```
-spanish-tutor/
+Spanish_Tutor/
 ├── .env                    # Your API key (never share this)
 ├── .env.example            # Template showing required variables
 ├── .gitignore              # Keeps secrets out of git
@@ -84,8 +82,18 @@ spanish-tutor/
 │   ├── tools.py            # Tool functions (translate, grammar, vocab, quiz)
 │   └── README.md
 │
-├── Phase-5/                # Multiple agents (coming soon)
-├── Phase-6/                # Orchestration (coming soon)
+├── Phase-5/
+│   ├── chatbot.py          # Terminal UI only
+│   ├── supervisor.py       # Supervisor routing agent
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   ├── grammar_agent.py
+│   │   ├── vocabulary_agent.py
+│   │   ├── quiz_agent.py
+│   │   └── conversation_agent.py
+│   └── README.md
+│
+├── Phase-6/                # Agent orchestration (coming soon)
 ├── Phase-7/                # Progress tracking (coming soon)
 ├── Phase-8/                # Quiz + evaluation (coming soon)
 ├── Phase-9/                # Lesson planning (coming soon)
@@ -183,6 +191,7 @@ python3 Phase-1/chatbot.py
 python3 Phase-2/chatbot.py
 python3 Phase-3/chatbot.py
 python3 Phase-4/chatbot.py
+python3 Phase-5/chatbot.py
 ```
 
 **Windows:**
@@ -191,6 +200,7 @@ python Phase-1\chatbot.py
 python Phase-2\chatbot.py
 python Phase-3\chatbot.py
 python Phase-4\chatbot.py
+python Phase-5\chatbot.py
 ```
 
 Each phase folder has its own README.md with specific instructions.
@@ -202,12 +212,11 @@ Each phase folder has its own README.md with specific instructions.
 Use this model name in all files across all phases:
 
 ```python
-MODEL_NAME = "gemini-3.6-flash"
+MODEL_NAME = "gemini-2.0-flash"
 ```
 
-This is the correct and stable free-tier model name.
-Do NOT use `gemini-1.5-flash` or `gemini-3.6-flash` — these either
-don't exist or have limited availability on the free tier.
+⚠️ Do NOT use `gemini-1.5-flash` or `gemini-3.6-flash` — these either
+do not exist or have limited availability on the free tier.
 
 ---
 
@@ -219,12 +228,13 @@ don't exist or have limited availability on the free tier.
 | `(venv)` not showing | Run the activate command again |
 | `ModuleNotFoundError` | Activate venv first, then `pip install -r requirements.txt` |
 | `ModuleNotFoundError: agent` or `tools` | Run from root folder, not from inside the phase folder |
+| `ModuleNotFoundError: supervisor` or `agents` | Run from root: `python3 Phase-5/chatbot.py` |
 | `GEMINI_API_KEY not found` | Check `.env` is in root folder, not inside a phase folder |
 | SSL certificate error | Run `pip install --upgrade certifi` |
-| 404 model not found | Set `MODEL_NAME = "gemini-3.6-flash"` in the relevant file |
+| 404 model not found | Set `MODEL_NAME = "gemini-2.0-flash"` in the relevant file |
 | 503 UNAVAILABLE | Gemini free tier busy — wait 2 min and retry |
 | 429 Too Many Requests | Rate limit hit — wait 1 minute |
-| Intent always `unknown` | Set `MODEL_NAME = "gemini-3.6-flash"` in `Phase-3/intent.py` |
+| Intent always `unknown` | Set `MODEL_NAME = "gemini-2.0-flash"` in `Phase-3/intent.py` |
 | No such file or directory | Check folder name matches exactly — folders are `Phase-1`, `Phase-2` etc. |
 
 ---
@@ -235,7 +245,7 @@ don't exist or have limited availability on the free tier.
 # First time
 git init
 git add .
-git commit -m "Phase 4 complete"
+git commit -m "Phase 5 complete"
 git remote add origin https://github.com/YOUR_USERNAME/spanish-tutor.git
 git branch -M main
 git push -u origin main
