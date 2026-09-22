@@ -75,7 +75,7 @@ class Supervisor:
 
             raw = response.text.strip()
 
-            # Strip markdown fences if present
+            # The model may wrap valid JSON in a markdown code block.
             if raw.startswith("```"):
                 raw = raw.split("```")[1]
                 if raw.startswith("json"):
