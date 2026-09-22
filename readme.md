@@ -221,10 +221,10 @@ python Phase-6\chatbot.py
 Use this model name in ALL files across ALL phases:
 
 ```python
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.6-flash"
 ```
 
-⚠️ Do NOT use `gemini-1.5-flash` or `gemini-3.6-flash` — these either
+⚠️ Do NOT use `gemini-1.5-flash` or `gemini-2.0-flash` — these either
 do not exist or have limited availability on the free tier.
 
 ---
