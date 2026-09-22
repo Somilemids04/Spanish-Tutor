@@ -30,6 +30,7 @@ class ConversationAgent:
         self.history = []
 
     def chat(self, user_message: str) -> str:
+        # Keep both sides of each exchange so the conversation remains coherent.
         self.history.append(
             types.Content(role="user", parts=[types.Part(text=user_message)])
         )
