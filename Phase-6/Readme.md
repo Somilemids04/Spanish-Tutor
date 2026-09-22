@@ -72,7 +72,7 @@ Spanish_Tutor/
 cd Desktop/Spanish_Tutor
 source venv/bin/activate
 pip install langgraph
-python3 -m phase6.chatbot
+python3 -m  chatbot
 ```
 
 **Windows:**
@@ -80,10 +80,10 @@ python3 -m phase6.chatbot
 cd Desktop\Spanish_Tutor
 venv\Scripts\activate
 pip install langgraph
-python -m phase6.chatbot
+python -m  chatbot
 ```
 
-> ⚠️ Note: run with `python3 -m phase6.chatbot` not `python3 Phase-6/chatbot.py`
+> ⚠️ Note: run with `python3 -m  chatbot` not `python3 Phase-6/chatbot.py`
 > The `-m` flag is needed for the package imports to work correctly.
 
 ---
@@ -122,10 +122,10 @@ You: status
 
 | Problem | Fix |
 |---|---|
-| `ModuleNotFoundError: phase6` | Use `python3 -m phase6.chatbot` not `python3 Phase-6/chatbot.py` |
+| `ModuleNotFoundError: Phase-6` | Use `python3 -m  chatbot` not `python3 Phase-6/chatbot.py` |
 | `ModuleNotFoundError: langgraph` | Run `pip install langgraph` with venv active |
 | Quiz doesn't use learned words | Type `status` to confirm `words_learned` is populated first |
-| 404 model not found | Set `MODEL_NAME = "gemini-2.0-flash"` in all node files |
+| 404 model not found | Set `MODEL_NAME = "gemini-3.6-flash"` in all node files |
 
 ---
 
