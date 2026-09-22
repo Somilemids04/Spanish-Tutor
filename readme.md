@@ -15,8 +15,8 @@ voice-enabled AI agent with long-term memory. Built entirely in Python,
 | 3 | Intent detection | ✅ Done |
 | 4 | First AI agent (Teacher Agent) | ✅ Done |
 | 5 | Multiple specialized agents (Grammar, Vocabulary, etc.) | ✅ Done |
-| 6 | Agent orchestration | 🔲 Next |
-| 7 | User progress tracking | 🔲 |
+| 6 | Agent orchestration | ✅ Done |
+| 7 | User progress tracking | 🔲 Next |
 | 8 | Quiz and evaluation | 🔲 |
 | 9 | Lesson planning | 🔲 |
 | 10 | Retrieval-Augmented Generation (RAG) | 🔲 |
@@ -46,7 +46,7 @@ By Phase 14 you will have a fully working:
 | Python | Phase 1 | Core language |
 | Gemini API free tier | Phase 1 | LLM backbone |
 | python-dotenv | Phase 1 | Load API keys safely |
-| LangGraph | Phase 6 | Agent orchestration |
+| LangGraph | Phase 6 | Agent orchestration + shared state |
 | ChromaDB | Phase 10 | Local vector database (free, no cloud) |
 | faster-whisper | Phase 12 | Speech-to-text (runs locally, free) |
 | pyttsx3 / Edge TTS | Phase 12 | Text-to-speech (free) |
@@ -93,7 +93,20 @@ Spanish_Tutor/
 │   │   └── conversation_agent.py
 │   └── README.md
 │
-├── Phase-6/                # Agent orchestration (coming soon)
+├── Phase-6/                # ⚠️ folder named Phase-6 but run as python package
+│   ├── __init__.py         # makes it a Python package
+│   ├── chatbot.py          # terminal UI + shared state management
+│   ├── graph.py            # LangGraph workflow definition
+│   ├── state.py            # shared state schema (TutorState)
+│   ├── nodes/
+│   │   ├── __init__.py
+│   │   ├── supervisor.py   # routing node
+│   │   ├── grammar.py      # grammar node
+│   │   ├── vocabulary.py   # vocabulary node (writes words_learned)
+│   │   ├── quiz.py         # quiz node (reads words_learned)
+│   │   └── conversation.py # conversation node
+│   └── README.md
+│
 ├── Phase-7/                # Progress tracking (coming soon)
 ├── Phase-8/                # Quiz + evaluation (coming soon)
 ├── Phase-9/                # Lesson planning (coming soon)
@@ -171,14 +184,6 @@ You will see `(venv)` at the start of your terminal line. ✅
 pip install -r requirements.txt
 ```
 
-### Step 6 — Add your API key
-
-Open `.env` and replace the placeholder:
-```
-GEMINI_API_KEY=your_actual_key_here
-```
-Save the file. Never share this or commit it to git.
-
 ---
 
 ## Running Each Phase
@@ -192,6 +197,7 @@ python3 Phase-2/chatbot.py
 python3 Phase-3/chatbot.py
 python3 Phase-4/chatbot.py
 python3 Phase-5/chatbot.py
+python3 Phase-6/chatbot.py     # Phase 6 uses relative imports
 ```
 
 **Windows:**
@@ -201,15 +207,18 @@ python Phase-2\chatbot.py
 python Phase-3\chatbot.py
 python Phase-4\chatbot.py
 python Phase-5\chatbot.py
+python Phase-6\chatbot.py
 ```
 
-Each phase folder has its own README.md with specific instructions.
+> ⚠️ Phase 6 Note: If you get `ModuleNotFoundError`, make sure all
+> imports inside Phase-6 files use relative imports (e.g. `from .graph import build_graph`)
+> not absolute imports (e.g. `from phase6.graph import build_graph`).
 
 ---
 
 ## Gemini Model Reference
 
-Use this model name in all files across all phases:
+Use this model name in ALL files across ALL phases:
 
 ```python
 MODEL_NAME = "gemini-2.0-flash"
@@ -217,6 +226,26 @@ MODEL_NAME = "gemini-2.0-flash"
 
 ⚠️ Do NOT use `gemini-1.5-flash` or `gemini-3.6-flash` — these either
 do not exist or have limited availability on the free tier.
+
+---
+
+## Requirements (install all at once)
+
+```
+google-genai
+python-dotenv
+langgraph
+```
+
+Install with:
+```bash
+pip install -r requirements.txt
+```
+
+Or install LangGraph separately when starting Phase 6:
+```bash
+pip install langgraph
+```
 
 ---
 
@@ -228,7 +257,9 @@ do not exist or have limited availability on the free tier.
 | `(venv)` not showing | Run the activate command again |
 | `ModuleNotFoundError` | Activate venv first, then `pip install -r requirements.txt` |
 | `ModuleNotFoundError: agent` or `tools` | Run from root folder, not from inside the phase folder |
-| `ModuleNotFoundError: supervisor` or `agents` | Run from root: `python3 Phase-5/chatbot.py` |
+| `ModuleNotFoundError: phase6` | Use relative imports inside Phase-6 files (`from .graph import...`) |
+| `ModuleNotFoundError: langgraph` | Run `pip install langgraph` with venv active |
+| `SyntaxError: invalid decimal literal` | You used `from Phase-6.x import` — use `from .x import` instead |
 | `GEMINI_API_KEY not found` | Check `.env` is in root folder, not inside a phase folder |
 | SSL certificate error | Run `pip install --upgrade certifi` |
 | 404 model not found | Set `MODEL_NAME = "gemini-2.0-flash"` in the relevant file |
@@ -245,7 +276,7 @@ do not exist or have limited availability on the free tier.
 # First time
 git init
 git add .
-git commit -m "Phase 5 complete"
+git commit -m "Phase 6 complete"
 git remote add origin https://github.com/YOUR_USERNAME/spanish-tutor.git
 git branch -M main
 git push -u origin main
