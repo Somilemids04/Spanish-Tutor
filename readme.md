@@ -93,7 +93,7 @@ Spanish_Tutor/
 │   │   └── conversation_agent.py
 │   └── README.md
 │
-├── Phase-6/                # ⚠️ folder named Phase-6 but run as python package
+├── Phase-6/                
 │   ├── __init__.py         # makes it a Python package
 │   ├── chatbot.py          # terminal UI + shared state management
 │   ├── graph.py            # LangGraph workflow definition
