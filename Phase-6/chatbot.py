@@ -74,7 +74,7 @@ def main():
         if not user_input:
             continue
 
-        # Update state with new user message
+        # Update state with new user messages
         state["user_message"] = user_input
 
         try:
