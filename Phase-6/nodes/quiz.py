@@ -28,7 +28,7 @@ def quiz_node(state: TutorState) -> TutorState:
     messages = state.get("messages", [])
     words_learned = state.get("words_learned", [])
 
-    # Pass context about what was learned so quiz is personalized
+    # Pass context about what was learned so quiz is personalized.
     context_note = ""
     if words_learned:
         context_note = f"\n[Context: The student recently learned these words: {', '.join(words_learned)}. Quiz them on these if possible.]"
@@ -51,7 +51,7 @@ def quiz_node(state: TutorState) -> TutorState:
     reply = response.text
     messages.append({"role": "assistant", "content": reply})
 
-    # Simple score tracking: look for "correct" in reply
+    # Simple score tracking: look for "correct" in reply.
     quiz_correct = state.get("quiz_correct", 0)
     quiz_total = state.get("quiz_total", 0)
     lower = reply.lower()
