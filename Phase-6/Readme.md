@@ -145,7 +145,7 @@ LangGraph = a workflow engine for agents.
 Shared state = agents talking to each other without direct calls.
 This is the foundation of everything from Phase 7 onward —
 progress tracking, lesson planning, and long-term memory all
-depend on state flowing cleanly between agents.
+depend on state flowing cleanly between agents. 
 
 ---
 
