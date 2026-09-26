@@ -23,7 +23,7 @@ Be encouraging and beginner-friendly.
 def grammar_node(state: TutorState) -> TutorState:
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-    # Build messages including history for context
+    # Build messages including history for context.
     messages = state.get("messages", [])
     messages.append({"role": "user", "content": state["user_message"]})
 
@@ -42,7 +42,7 @@ def grammar_node(state: TutorState) -> TutorState:
     reply = response.text
     messages.append({"role": "assistant", "content": reply})
 
-    # Update topics covered in shared state
+    # Update topics covered in shared state.
     topics = state.get("topics_covered", [])
     topics.append(f"grammar: {state['user_message'][:40]}")
 
