@@ -51,7 +51,7 @@ def conversation_node(state: TutorState) -> TutorState:
     reply = response.text
     messages.append({"role": "assistant", "content": reply})
 
-    # Try to extract student name if they introduced themselves
+    # Try to extract student name if they introduced themselves.
     student_name_updated = state.get("student_name")
     lower_msg = state["user_message"].lower()
     if "my name is" in lower_msg or "i am" in lower_msg:
