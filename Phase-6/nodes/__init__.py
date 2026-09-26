@@ -1,1 +1,1 @@
-# Makes nodes/ a Python package
+# Makes nodes/(Folder) a Python package
