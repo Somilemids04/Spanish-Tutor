@@ -44,13 +44,13 @@ def vocabulary_node(state: TutorState) -> TutorState:
     reply = response.text
     messages.append({"role": "assistant", "content": reply})
 
-    # Extract words learned from the response
+    # Extract words learned from the response.
     words_learned = state.get("words_learned", [])
     match = re.search(r"WORDS_LEARNED:\s*(.+)", reply)
     if match:
         new_words = [w.strip() for w in match.group(1).split(",")]
         words_learned = list(set(words_learned + new_words))
-        # Remove the WORDS_LEARNED line from the displayed response
+        # Remove the WORDS_LEARNED line from the displayed response.
         reply = reply[:match.start()].strip()
 
     topics = state.get("topics_covered", [])
