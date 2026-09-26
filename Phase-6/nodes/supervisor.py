@@ -40,7 +40,7 @@ def supervisor_node(state: TutorState) -> TutorState:
     """
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-    # Build context for smarter routing
+    # Build context for smarter routing.
     context = f"""
 Student message: {state['user_message']}
 Last agent: {state.get('last_agent', 'none')}
