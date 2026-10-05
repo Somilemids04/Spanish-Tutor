@@ -3,7 +3,7 @@ import os, re
 from google import genai
 from google.genai import types
 
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.6-flash"
 SYSTEM_INSTRUCTION = """\
 You are Vocabulario, a Spanish vocabulary specialist.
 For every word give: Spanish word, pronunciation, English meaning, example sentence.
