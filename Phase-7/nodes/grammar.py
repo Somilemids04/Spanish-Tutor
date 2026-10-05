@@ -3,7 +3,7 @@ import os
 from google import genai
 from google.genai import types
 
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.6-flash"
 SYSTEM_INSTRUCTION = """\
 You are Gramatica, a Spanish grammar specialist.
 Explain grammar concepts clearly with 3 short examples.
