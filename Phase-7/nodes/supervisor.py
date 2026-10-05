@@ -6,9 +6,9 @@ Same routing logic as Phase 6.
 import json
 import os
 from google import genai
-from .state import TutorState
+from state import TutorState
 
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.6-flash"
 
 ROUTING_PROMPT = """\
 You are a routing supervisor for a Spanish tutoring app.
