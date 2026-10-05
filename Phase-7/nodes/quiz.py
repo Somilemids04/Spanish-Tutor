@@ -3,7 +3,7 @@ import os
 from google import genai
 from google.genai import types
 
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.6-flash"
 SYSTEM_INSTRUCTION = """\
 You are Examen, a Spanish quiz specialist.
 Ask ONE question at a time with 4 multiple choice options (A/B/C/D).
