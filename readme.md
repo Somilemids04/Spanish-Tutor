@@ -224,7 +224,7 @@ Use this model name in ALL files across ALL phases:
 MODEL_NAME = "gemini-3.6-flash"
 ```
 
-⚠️ Do NOT use `gemini-1.5-flash` or `gemini-2.0-flash` — these either
+⚠️ Do NOT use `gemini-1.5-flash` or ` gemini-3.6-flash` — these either
 do not exist or have limited availability on the free tier.
 
 ---
@@ -262,10 +262,10 @@ pip install langgraph
 | `SyntaxError: invalid decimal literal` | You used `from Phase-6.x import` — use `from .x import` instead |
 | `GEMINI_API_KEY not found` | Check `.env` is in root folder, not inside a phase folder |
 | SSL certificate error | Run `pip install --upgrade certifi` |
-| 404 model not found | Set `MODEL_NAME = "gemini-2.0-flash"` in the relevant file |
+| 404 model not found | Set `MODEL_NAME = " gemini-3.6-flash"` in the relevant file |
 | 503 UNAVAILABLE | Gemini free tier busy — wait 2 min and retry |
 | 429 Too Many Requests | Rate limit hit — wait 1 minute |
-| Intent always `unknown` | Set `MODEL_NAME = "gemini-2.0-flash"` in `Phase-3/intent.py` |
+| Intent always `unknown` | Set `MODEL_NAME = " gemini-3.6-flash"` in `Phase-3/intent.py` |
 | No such file or directory | Check folder name matches exactly — folders are `Phase-1`, `Phase-2` etc. |
 
 ---
