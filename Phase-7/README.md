@@ -126,7 +126,7 @@ You: quiz me     ← quizzes on colors from Session 1
 | `ModuleNotFoundError: phase7` | Run from root: `python3 Phase-7/chatbot.py` |
 | `progress.json` not created | Run the script and type at least one message |
 | Progress not loading | Check `Phase-7/data/progress.json` exists and is valid JSON |
-| 404 model not found | Set `MODEL_NAME = "gemini-2.0-flash"` in node files |
+| 404 model not found | Set `MODEL_NAME = "gemini-3.6-flash"` in node files |
 
 ---
 
