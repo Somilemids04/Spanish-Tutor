@@ -238,7 +238,7 @@ python Phase-8\chatbot.py
 
 Use this in ALL files across ALL phases:
 ```python
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.6-flash"
 ```
 
 ⚠️ Do NOT use `gemini-1.5-flash` or `gemini-3.6-flash`.
@@ -276,7 +276,7 @@ pip install langgraph
 | `ModuleNotFoundError: langgraph` | `pip install langgraph` |
 | `GEMINI_API_KEY not found` | Check `.env` is in root, not inside a phase folder |
 | SSL certificate error | `pip install --upgrade certifi` |
-| 404 model not found | Set `MODEL_NAME = "gemini-2.0-flash"` |
+| 404 model not found | Set `MODEL_NAME = " gemini-3.6-flash"` |
 | 503 UNAVAILABLE | Gemini busy — wait 2 min and retry |
 | 429 Too Many Requests | Rate limit — wait 1 minute |
 | Quiz stuck mid-session | Type any letter (A/B/C/D) to continue |
