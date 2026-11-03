@@ -14,12 +14,12 @@ voice-enabled AI agent with long-term memory. Built entirely in Python,
 | 2 | Conversation memory | ✅ Done |
 | 3 | Intent detection | ✅ Done |
 | 4 | First AI agent (Teacher Agent) | ✅ Done |
-| 5 | Multiple specialized agents (Grammar, Vocabulary, etc.) | ✅ Done |
-| 6 | Agent orchestration | ✅ Done |
+| 5 | Multiple specialized agents | ✅ Done |
+| 6 | Agent orchestration (LangGraph) | ✅ Done |
 | 7 | User progress tracking | ✅ Done |
 | 8 | Quiz and evaluation | ✅ Done |
-| 9 | Lesson planning | 🔲 Next |
-| 10 | Retrieval-Augmented Generation (RAG) | 🔲 |
+| 9 | Lesson planning | ✅ Done |
+| 10 | Retrieval-Augmented Generation (RAG) | 🔲 Next |
 | 11 | Long-term memory | 🔲 |
 | 12 | Voice support (STT + TTS) | 🔲 |
 | 13 | Advanced multi-agent workflows | 🔲 |
@@ -33,6 +33,7 @@ By Phase 14 you will have a fully working:
 - 🎙️ Voice-enabled Spanish tutor (speak to it, it speaks back)
 - 🧠 Long-term memory (remembers you across sessions)
 - 🤖 Multi-agent system (specialized agents for grammar, vocabulary, quizzes)
+- 📚 RAG knowledge base (real Spanish dictionary and grammar rules)
 - 🚀 Production-ready deployment
 
 100% built using free tools and free API tiers.
@@ -44,9 +45,9 @@ By Phase 14 you will have a fully working:
 | Tool | Used From | Purpose |
 |------|-----------|---------|
 | Python | Phase 1 | Core language |
-| Gemini API free tier | Phase 1 | LLM backbone |
+| Gemini API free tier (`gemini-2.0-flash`) | Phase 1 | LLM backbone |
 | python-dotenv | Phase 1 | Load API keys safely |
-| LangGraph | Phase 6 | Agent orchestration + shared state |
+| LangGraph | Phase 6 | Agent orchestration + state graph |
 | ChromaDB | Phase 10 | Local vector database (free, no cloud) |
 | faster-whisper | Phase 12 | Speech-to-text (runs locally, free) |
 | pyttsx3 / Edge TTS | Phase 12 | Text-to-speech (free) |
@@ -77,72 +78,52 @@ Spanish_Tutor/
 │   └── README.md
 │
 ├── Phase-4/
-│   ├── chatbot.py          # Terminal UI only
-│   ├── agent.py            # Teacher Agent + ReAct loop
-│   ├── tools.py            # Tool functions
+│   ├── agent.py            # Teacher Agent with tool calling
+│   ├── tools.py            # Tool definitions and registry
+│   ├── chatbot.py          # Phase 4 entry point
 │   └── README.md
 │
 ├── Phase-5/
+│   ├── supervisor.py       # Routes messages to specialized agents
+│   ├── agents/             # GrammarAgent, VocabularyAgent, etc.
 │   ├── chatbot.py
-│   ├── supervisor.py
-│   ├── agents/
-│   │   ├── __init__.py
-│   │   ├── grammar_agent.py
-│   │   ├── vocabulary_agent.py
-│   │   ├── quiz_agent.py
-│   │   └── conversation_agent.py
 │   └── README.md
 │
 ├── Phase-6/
-│   ├── __init__.py
+│   ├── graph.py            # LangGraph StateGraph
+│   ├── state.py            # TutorState TypedDict
+│   ├── nodes/              # One file per agent node
 │   ├── chatbot.py
-│   ├── graph.py            # LangGraph workflow
-│   ├── state.py            # Shared state schema
-│   ├── nodes/
-│   │   ├── __init__.py
-│   │   ├── supervisor.py
-│   │   ├── grammar.py
-│   │   ├── vocabulary.py
-│   │   ├── quiz.py
-│   │   └── conversation.py
 │   └── README.md
 │
 ├── Phase-7/
-│   ├── __init__.py
-│   ├── chatbot.py
+│   ├── progress_tracker.py # Saves/loads progress.json
 │   ├── graph.py
 │   ├── state.py
-│   ├── progress_tracker.py # Saves/loads progress to JSON
-│   ├── data/
-│   │   └── progress.json   # Auto-created on first run
 │   ├── nodes/
-│   │   ├── __init__.py
-│   │   ├── supervisor.py
-│   │   ├── grammar.py
-│   │   ├── vocabulary.py
-│   │   ├── quiz.py
-│   │   └── conversation.py
+│   ├── data/               # progress.json lives here
+│   ├── chatbot.py
 │   └── README.md
 │
 ├── Phase-8/
-│   ├── __init__.py
-│   ├── chatbot.py
-│   ├── graph.py
-│   ├── state.py
-│   ├── quiz_engine.py      # Structured quiz logic + evaluation reports
-│   ├── progress_tracker.py # Updated: saves topic_scores
-│   ├── data/
-│   │   └── progress.json
+│   ├── quiz_engine.py      # Question generation + evaluation
+│   ├── graph.py            # Quiz routing logic
+│   ├── state.py            # Adds quiz fields to TutorState
 │   ├── nodes/
-│   │   ├── __init__.py
-│   │   ├── supervisor.py
-│   │   ├── grammar.py
-│   │   ├── vocabulary.py
-│   │   ├── quiz.py         # Rewritten: uses quiz_engine
-│   │   └── conversation.py
+│   ├── data/
+│   ├── chatbot.py
 │   └── README.md
 │
-├── Phase-9/                # Lesson planning (coming soon)
+├── Phase-9/
+│   ├── lesson_planner.py   # Analyzes progress → builds lesson plan
+│   ├── graph.py
+│   ├── state.py            # Adds lesson fields to TutorState
+│   ├── nodes/
+│   │   └── lesson.py       # Lesson execution node
+│   ├── data/
+│   ├── chatbot.py
+│   └── README.md
+│
 ├── Phase-10/               # RAG (coming soon)
 ├── Phase-11/               # Long-term memory (coming soon)
 ├── Phase-12/               # Voice support (coming soon)
@@ -156,6 +137,7 @@ Spanish_Tutor/
 
 ### 1. Install Python
 
+Check if you have it:
 ```
 python3 --version
 ```
@@ -165,36 +147,70 @@ During install on Windows, check "Add Python to PATH".
 ### 2. Get a free Gemini API key
 
 Go to: https://aistudio.google.com/apikey
-Free tier is enough for all 14 phases.
+Sign in with a Google account and generate a key. Free tier is enough for all phases.
 
 ---
 
-## First-Time Setup (do this once)
+## First-Time Project Setup (do this once)
+
+### Step 1 — Open your terminal
+
+- **Mac**: Spotlight (Cmd+Space) → type Terminal → Enter
+- **Windows**: Start menu → search cmd or PowerShell → Enter
+
+### Step 2 — Navigate to the project
 
 ```bash
-# Mac/Linux
 cd Desktop/Spanish_Tutor
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+```
+Windows: use backslashes `cd Desktop\Spanish_Tutor`
 
-# Windows
-cd Desktop\Spanish_Tutor
-python -m venv venv
+### Step 3 — Create a virtual environment
+
+```bash
+python3 -m venv venv
+```
+
+### Step 4 — Activate it
+
+**Mac/Linux:**
+```bash
+source venv/bin/activate
+```
+
+**Windows (cmd):**
+```bash
 venv\Scripts\activate
+```
+
+**Windows (PowerShell):**
+```bash
+venv\Scripts\Activate.ps1
+```
+
+You will see `(venv)` at the start of your terminal line. ✅
+
+> You must activate every time you open a new terminal.
+
+### Step 5 — Install packages
+
+```bash
 pip install -r requirements.txt
 ```
 
-Add your API key to `.env`:
+### Step 6 — Add your API key
+
+Open `.env` and replace the placeholder:
 ```
 GEMINI_API_KEY=your_actual_key_here
 ```
+Save the file. Never share this or commit it to git.
 
 ---
 
 ## Running Each Phase
 
-Always run from the `Spanish_Tutor` root with `(venv)` active.
+Always run from the `Spanish_Tutor` root folder with `(venv)` active.
 
 **Mac/Linux:**
 ```bash
@@ -206,6 +222,7 @@ python3 Phase-5/chatbot.py
 python3 Phase-6/chatbot.py
 python3 Phase-7/chatbot.py
 python3 Phase-8/chatbot.py
+python3 Phase-9/chatbot.py
 ```
 
 **Windows:**
@@ -218,50 +235,23 @@ python Phase-5\chatbot.py
 python Phase-6\chatbot.py
 python Phase-7\chatbot.py
 python Phase-8\chatbot.py
+python Phase-9\chatbot.py
 ```
 
----
-
-## Terminal Commands (Phase 6 onward)
-
-| Command | What it does |
-|---|---|
-| `exit` | Saves progress and quits |
-| `status` | Shows live shared state |
-| `progress` | Full progress report with scores |
-| `quiz me on [topic]` | Start a quiz (Phase 8+) |
-| `quiz intermediate on [topic]` | Quiz with difficulty level |
+Each phase folder has its own README.md with specific instructions.
 
 ---
 
-## Gemini Model Reference
+## Model Name
 
-Use this in ALL files across ALL phases:
+Always use this model name in all phase files:
+
 ```python
-MODEL_NAME = "gemini-3.6-flash"
+MODEL_NAME = "gemini-2.0-flash"
 ```
 
-⚠️ Do NOT use `gemini-1.5-flash` or `gemini-3.6-flash`.
-
----
-
-## Requirements
-
-```
-google-genai
-python-dotenv
-langgraph
-```
-
-Install:
-```bash
-pip install -r requirements.txt
-```
-
-LangGraph needed from Phase 6 onward:
-```bash
-pip install langgraph
-```
+This is the stable free-tier model. If you see a 404 error, check that every
+file uses exactly this string.
 
 ---
 
@@ -269,42 +259,32 @@ pip install langgraph
 
 | Problem | Fix |
 |---|---|
-| `command not found: python` | Use `python3` (Mac/Linux) |
-| `(venv)` not showing | Run activate command again |
-| `ModuleNotFoundError` | Activate venv + `pip install -r requirements.txt` |
-| `ModuleNotFoundError: phase6/7/8` | Use relative imports inside phase folders |
-| `ModuleNotFoundError: langgraph` | `pip install langgraph` |
-| `GEMINI_API_KEY not found` | Check `.env` is in root, not inside a phase folder |
-| SSL certificate error | `pip install --upgrade certifi` |
-| 404 model not found | Set `MODEL_NAME = " gemini-3.6-flash"` |
-| 503 UNAVAILABLE | Gemini busy — wait 2 min and retry |
-| 429 Too Many Requests | Rate limit — wait 1 minute |
-| Quiz stuck mid-session | Type any letter (A/B/C/D) to continue |
-| Progress not saving | Make sure `data/` folder exists inside the phase folder |
-| Name not recognized | Use English: "my name is X" or Spanish: "me llamo X" |
+| `command not found: python` | Use `python3` instead (Mac/Linux) |
+| `(venv)` not showing | Run the activate command again |
+| `ModuleNotFoundError` | Activate venv first, then `pip install -r requirements.txt` |
+| `GEMINI_API_KEY not found` | Check `.env` is in root folder, not inside a phase folder |
+| SSL certificate error | Run `pip install --upgrade certifi` |
+| 404 model not found | Change model to `gemini-2.0-flash` in the relevant file |
+| 503 UNAVAILABLE | Gemini free tier busy — wait 2 min and retry |
+| 429 Too Many Requests | Rate limit hit — wait 1 minute |
+| Intent always `unknown` | Check `MODEL_NAME` is `gemini-2.0-flash` in that file |
+| `ModuleNotFoundError: langgraph` | Run `pip install langgraph` |
 
 ---
 
-## Git Commands
+## Git Commands (push updates)
 
 ```bash
-# First time
-git init
 git add .
-git commit -m "Phase 8 complete"
-git remote add origin https://github.com/YOUR_USERNAME/spanish-tutor.git
-git branch -M main
-git push -u origin main
-
-# Every phase after
-git add .
-git commit -m "Phase X complete"
+git commit -m "Phase 9 complete"
 git push
 ```
 
 ---
 
 ## How to Think About This Project
+
+Each phase answers one question:
 
 | Phase | Core Question |
 |-------|--------------|
