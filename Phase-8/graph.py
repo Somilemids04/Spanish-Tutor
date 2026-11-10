@@ -4,12 +4,12 @@ Same LangGraph structure, quiz node now uses full quiz engine.
 """
 
 from langgraph.graph import StateGraph, END
-from .state import TutorState
-from .nodes.supervisor import supervisor_node
-from .nodes.grammar import grammar_node
-from .nodes.vocabulary import vocabulary_node
-from .nodes.quiz import quiz_node
-from .nodes.conversation import conversation_node
+from state import TutorState
+from nodes.supervisor import supervisor_node
+from nodes.grammar import grammar_node
+from nodes.vocabulary import vocabulary_node
+from nodes.quiz import quiz_node
+from nodes.conversation import conversation_node
 
 
 def route_to_agent(state: TutorState) -> str:
