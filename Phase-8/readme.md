@@ -123,10 +123,10 @@ You: progress
 
 | Problem | Fix |
 |---|---|
-| `ModuleNotFoundError: phase8` | Run from root: `python3 Phase-8/chatbot.py` |
+| `ModuleNotFoundError:  ` | Run from root: `python3 Phase-8/chatbot.py` |
 | Quiz generates wrong questions | Gemini returned bad JSON — retry |
 | Quiz stuck after last question | Type anything to trigger report |
-| 404 model error | Set `MODEL_NAME = "gemini-2.0-flash"` in all files |
+| 404 model error | Set `MODEL_NAME = " gemini-3.6-flash"` in all files |
 
 ---
 
