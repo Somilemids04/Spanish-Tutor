@@ -14,7 +14,7 @@ import json
 import os
 from google import genai
 
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3.6-flash"
 
 
 def generate_questions(topic: str, difficulty: str, count: int = 5, words_learned: list = None) -> list:
