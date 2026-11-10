@@ -10,9 +10,9 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from dotenv import load_dotenv
-from phase8.graph import build_graph
-from phase8.state import TutorState
-from phase8.progress_tracker import (
+from  graph import build_graph
+from  state import TutorState
+from  progress_tracker import (
     load_progress,
     save_progress,
     save_session_end,
